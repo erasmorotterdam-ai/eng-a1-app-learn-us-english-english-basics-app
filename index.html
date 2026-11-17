@@ -794,7 +794,8 @@ function bodySim(){
   var log=s.log.map(function(l){
     return '<div class="line '+(l.r==='C'?'you':'them')+'"><span></span><div class="bubble"><div class="who">'+(l.r==='B'?U.other:'Tú')+'</div><div class="en">'+esc(l.en)+'</div></div></div>';
   }).join('');
-  var opts=n.opts.map(function(o,i){
+  s.ord=s.ord||{}; if(!s.ord[s.node]) s.ord[s.node]=shuffle(n.opts.map(function(_,i){return i;}));
+  var opts=s.ord[s.node].map(function(i){var o=n.opts[i];
     var cls='', tried=s.tried.indexOf(i)>=0;
     if(tried) cls=(o.k==='off')?'bad':'good';
     return '<button class="opt '+cls+'" data-act="simPick" data-i="'+i+'"'+((tried||(s.fb&&s.fb.resolved))?' disabled':'')+'>'+esc(o.t)+'</button>';
@@ -933,7 +934,7 @@ UNITS.push({id:'u2',n:2,title:'Good morning!',es:'Saludos y charla breve con com
   LN('a2','C','Good morning! [[Pretty good, thanks. You?]]','¡Buenos días! Bastante bien, gracias. ¿Y tú?'),
   LN('a3','B','Not bad. [[Did you have a good weekend?]]','No está mal. ¿Pasaste un buen fin de semana?'),
   LN('a4','C','Yes, it was great. [[How about you?]]','Sí, estuvo genial. ¿Y tú?'),
-  LN('a5','B','It was nice and quiet. Ready for the meeting?','Fue tranquilo. ¿Lista para la reunión?'),
+  LN('a5','B','It was nice and quiet. Ready for the meeting?','Fue tranquilo. ¿Listo/a para la reunión?'),
   LN('a6','C','Almost. [[I need a coffee first.]]','Casi. Primero necesito un café.'),
   LN('a7','B','Same here. [[See you at ten!]]','Igual yo. ¡Nos vemos a las diez!'),
   LN('a8','C','[[See you then!]]','¡Nos vemos!')],
@@ -1107,7 +1108,7 @@ UNITS.push({id:'u4',n:4,title:'Could you say that again?',es:'Pedir que repitan,
    [/\b(thanks|thank you|ok|okay|yes|yeah)\b/,'ok','Está bien. Más natural: "Got it. Thanks!"','Got it. Thanks!']],
    'No entendí. Di: "Got it. Thanks!"','Got it. Thanks!')
  ],
- notes:['Pedir que repitan es normal. Los hablantes nativos también lo hacen en reuniones y llamadas.','<em>Pardon?</em> y <em>Sorry?</em> son formas cortas. <em>What?</em> solo suena brusco.','Para deletrear se dicen los nombres de las letras: A, B, C… En EE. UU. la <em>Z</em> se dice "zee".','Los números de sala y teléfono se dicen dígito por dígito. El cero suele decirse "oh".'],
+ notes:['Pedir que repitan es normal. Los hablantes nativos también lo hacen en reuniones y llamadas.','<em>Pardon?</em> y <em>Sorry?</em> son formas cortas. <em>What?</em> solo suena brusco.','Para deletrear se dicen los nombres de las letras: A, B, C… En EE. UU. la <em>Z</em> se llama distinto que en otros países de habla inglesa; escucha cómo la dice la voz de la app.','Los números de sala y teléfono se dicen dígito por dígito. El cero suele decirse "oh".'],
  goals:[{t:'Pedir que repitan información',d:'Sorry, could you say that again?',k:'sim'},{t:'Entender una hora y un número de sala',d:'three-fifteen · two-oh-four',k:'num'},{t:'Pedir que hablen más lento y deletreen',d:'slower · How do you spell…?',k:'nat'},{t:'Mantener una conversación hablando',d:'4 turnos respondidos en voz alta',k:'mine'}],
  mineIntro:['Si no entiendes algo en la vida real, estas frases te sirven igual.'],
  res:[
@@ -1292,7 +1293,7 @@ MU({id:'u7',ord:3,tema:'3',title:'Alphabet and spelling',es:'El alfabeto y cómo
  turns:[T2('Deletrea un apellido (por ejemplo R-A-M-O-S).','R-A-M-O-S',"Welcome! Can you spell your last name?",/(?:^| )(?:[a-z] ){3,}[a-z](?: |$)/,/\b(its|my last name is)\b/,"It's R-A-M-O-S.",'No oí letras sueltas. Di las letras una por una: "R-A-M-O-S".'),
   T2('Di un correo usando "at" y "dot".','ana dot ramos at mail dot com',"Thanks. And what's your email address?",/\bat\b.*\bdot\b|\bdot\b.*\bat\b/,/\b(email|its)\b/,"It's ana dot ramos at mail dot com."),
   T2('Responde si lleva una letra o dos.','Just one S.','Is that with one S or two?',/\b(one|two)\b/,/\b(yes|no)\b/,'Just one S.')],
- notes:['En inglés las letras se nombran distinto al español: A = "ei", E = "i", I = "ai". Escúchalas varias veces.','Para aclarar se usa una palabra: <em>M as in Mary</em>.','En un correo, <em>@</em> es "at" y el punto es "dot".'],
+ notes:['Los nombres de las letras en inglés suenan distinto a los del español, sobre todo A, E, I, G y J. Escúchalas muchas veces antes de repetirlas.','Para aclarar se usa una palabra: <em>M as in Mary</em>.','En un correo, <em>@</em> es "at" y el punto es "dot".'],
  res:[YG('"spell your last name"'),R('Rachel\'s English','https://rachelsenglish.com/','Listening y speaking','Videos gratuitos de pronunciación del inglés americano. Úsalo para los nombres de las letras.'),R('Sounds of Speech','https://soundsofspeech.uiowa.edu/','Speaking','Animaciones de cómo se forma cada sonido del inglés americano.')]});
 
 MU({id:'u8',ord:4,tema:'4',title:'Numbers and age',es:'Números, teléfono y edad',other:'Compañera',num:true,numd:'thirteen / thirty, fifteen / fifty',
@@ -1303,7 +1304,7 @@ MU({id:'u8',ord:4,tema:'4',title:'Numbers and age',es:'Números, teléfono y eda
   K("It's ___. (teléfono)",'Es ___.','C',['five five five, one two three, four five six seven','two one two, nine eight seven, six five four three'],"It's ",'.'),
   K('How old are you? — I\'m ___.','¿Cuántos años tienes? — Tengo ___.','C',['twenty-five','thirty-two','forty-one','fifty-six'],"I'm ",'.'),
   K('There are ___ people.','Hay ___ personas.','C',['fifteen','twenty','fifty','a hundred'],'There are ',' people.'),
-  K('How many ___ do you have?','¿Cuántos/as ___ tienes?','C',['employees','hours','kids','brothers'],'How many ',' do you have?')],
+  K('How many ___ do you have?','¿Cuántos/as ___ tienes?','C',['employees','kids','sisters','brothers'],'How many ',' do you have?')],
  ex:[LI('Escucha. ¿Qué número es?','Thirteen.','B',['13','30','3'],'"Thirteen" (13) acentúa la última sílaba; "thirty" (30), la primera.',true),
   LI('Escucha. ¿Qué número es?','Fifty.','B',['50','15','5'],'"Fifty" (50) acentúa la primera sílaba; "fifteen" (15), la última.',true),
   LI('Escucha. ¿Cuántos años tiene?',"I'm forty-one.",'B',['41','14','40'],'Cuarenta y uno = forty-one.'),
@@ -1348,8 +1349,8 @@ MU({id:'u10',ord:6,tema:'6',title:'Family',es:'Familia y personas cercanas',othe
  chunks:[K('This is my ___.','Ella/Él es mi ___.','C',['sister','brother','mother','father','wife','husband'],'This is my ','.'),
   K('I have ___.','Tengo ___.','C',['two sisters and one brother','a daughter','two kids','a big family'],'I have ','.'),
   K('Do you have any ___?','¿Tienes ___?','B',['brothers or sisters','kids','cousins'],'Do you have any ','?'),
-  K('His/Her name is ___.','Se llama ___.','C',['Marta','Luis','Carlos','Sofía'],'Her name is ','.'),
-  K('She/He is ___ years old.','Tiene ___ años.','C',['seven','twelve','thirty-five','sixty'],'She is ',' years old.')],
+  K('His / Her name is ___.','Se llama ___.','C',['Her name is Marta.','His name is Luis.','His name is Carlos.','Her name is Sofía.'],'',''),
+  K('She / He is ___ years old.','Tiene ___ años.','C',['She is seven years old.','He is twelve years old.','She is thirty-five years old.','He is sixty years old.'],'','')],
  ex:[LI('Escucha. ¿Qué te preguntan?','Do you have any brothers or sisters?','B',['Si tienes hermanos','Si tienes hijos','Si tienes trabajo'],'"Brothers or sisters" son hermanos y hermanas.'),
   LI('Escucha. ¿Cuántos hermanos tiene?','I have two sisters and one brother.','B',['Dos hermanas y un hermano','Un hermano','Dos hermanos'],'Two sisters and one brother = 2 hermanas y 1 hermano.'),
   BU('Arma la frase: esta es mi hermana.',['This','is','my','sister.'],['are'],'This is my + familiar.'),
@@ -1367,7 +1368,7 @@ MU({id:'u10',ord:6,tema:'6',title:'Family',es:'Familia y personas cercanas',othe
 MU({id:'u11',ord:7,tema:'7',title:'Daily routines',es:'Rutinas del día',other:'Compañera',
  scene:'Charlas con una compañera sobre tu día.',
  can:['Decir a qué hora te levantas y empiezas a trabajar.','Preguntar <mark>What do you do after work?</mark>','Usar <em>always</em>, <em>usually</em> y <em>never</em>.'],
- lines:[['B','What time do you get up?','¿A qué hora te levantas?'],['C',"[[I get up]] at six."," Me levanto a las seis."],['B','Wow, early! When do you start work?','¡Temprano! ¿Cuándo empiezas a trabajar?'],['C',"[[I start work]] at eight. I usually take the bus.",'Empiezo a las ocho. Normalmente tomo el autobús.'],['B','And after work?','¿Y después del trabajo?'],['C',"I go home, cook dinner, and watch TV.",'Voy a casa, preparo la cena y veo televisión.']],
+ lines:[['B','What time do you get up?','¿A qué hora te levantas?'],['C',"[[I get up]] at six.","Me levanto a las seis."],['B','Wow, early! When do you start work?','¡Temprano! ¿Cuándo empiezas a trabajar?'],['C',"[[I start work]] at eight. I usually take the bus.",'Empiezo a las ocho. Normalmente tomo el autobús.'],['B','And after work?','¿Y después del trabajo?'],['C',"I go home, cook dinner, and watch TV.",'Voy a casa, preparo la cena y veo televisión.']],
  chunks:[K('I get up at ___.','Me levanto a las ___.','C',['six','six-thirty','seven','five forty-five'],'I get up at ','.'),
   K('I start work at ___.','Empiezo a trabajar a las ___.','C',['eight','eight-thirty','nine','seven'],'I start work at ','.'),
   K('I usually ___.','Normalmente ___.','C',['take the bus','eat lunch at noon','drink coffee','walk to work'],'I usually ','.'),
@@ -1389,7 +1390,7 @@ MU({id:'u11',ord:7,tema:'7',title:'Daily routines',es:'Rutinas del día',other:'
 MU({id:'u12',ord:8.2,tema:'8',title:'Days and dates',es:'Días, meses y fechas',other:'Supervisora',num:true,numd:'ordinales y fechas',
  scene:'Tu supervisora revisa contigo el calendario de la semana.',
  can:['Decir los días de la semana y la fecha.','Preguntar <mark>What day is it?</mark> y <mark>When is…?</mark>','Entender fechas como <em>March third</em>.'],
- lines:[['B','Hi Ana. [[What day is it today?]]','Hola Ana. ¿Qué día es hoy?'],['C',"It's Tuesday, November eighteenth.",'Es martes 18 de noviembre.'],['B','Right. [[When is]] the training?','Correcto. ¿Cuándo es la capacitación?'],['C',"It's on Thursday.",'Es el jueves.'],['B','And your day off?','¿Y tu día libre?'],['C',"[[My day off is]] Saturday.",'Mi día libre es el sábado.']],
+ lines:[['B','Hi Ana. [[What day is it today?]]','Hola Ana. ¿Qué día es hoy?'],['C',"It's Tuesday, March third.",'Es martes 3 de marzo.'],['B','Right. [[When is]] the training?','Correcto. ¿Cuándo es la capacitación?'],['C',"It's on Thursday.",'Es el jueves.'],['B','And your day off?','¿Y tu día libre?'],['C',"[[My day off is]] Saturday.",'Mi día libre es el sábado.']],
  chunks:[K('What day is it ___?','¿Qué día es ___?','C',['today','tomorrow'],'What day is it ','?'),
   K("It's ___.",'Es ___.','C',['Monday','Tuesday','Wednesday','Thursday','Friday'],"It's ",'.'),
   K('When is ___?','¿Cuándo es ___?','C',['the meeting','the training','your birthday','the deadline'],'When is ','?'),
@@ -1413,7 +1414,7 @@ MU({id:'u13',ord:9,tema:'9',title:'Food and drinks',es:'Comida, bebidas y prefer
  scene:'Hablan de qué comer a la hora del almuerzo.',
  can:['Decir qué te gusta: <mark>I like…</mark> / <mark>I don\'t like…</mark>','Preguntar <em>Do you like…?</em>','Hablar de alimentos y bebidas comunes.'],
  lines:[['B','Are you hungry? It\'s almost noon.','¿Tienes hambre? Casi es mediodía.'],['C','Yes, I am. [[I\'m hungry.]]','Sí, tengo hambre.'],['B','[[Do you like]] chicken?','¿Te gusta el pollo?'],['C','Yes, I love chicken. But I don\'t like fish.','Sí, me encanta el pollo. Pero no me gusta el pescado.'],['B','Let\'s get sandwiches and a salad.','Pidamos sándwiches y una ensalada.'],['C','Sounds good!','¡Me parece bien!']],
- chunks:[K("I'm ___.",'Tengo / Estoy ___.','C',['hungry','thirsty','full','tired'],"I'm ",'.'),
+ chunks:[K("I'm ___.",'Tengo / Estoy ___.','C',['hungry','thirsty','full','starving'],"I'm ",'.'),
   K('Do you like ___?','¿Te gusta(n) ___?','B',['chicken','rice and beans','salad','coffee'],'Do you like ','?'),
   K('I like / love ___.','Me gusta / encanta ___.','C',['I like chicken.','I love coffee.','I like rice and beans.','I love pizza.'],'',''),
   K("I don't like ___.",'No me gusta ___.','C',['fish','spicy food','onions','soda'],"I don't like ",'.'),
@@ -1483,7 +1484,7 @@ MU({id:'u16',ord:12,tema:'12',title:'Clothes and colors',es:'Ropa, colores y uni
  can:['Nombrar prendas y colores comunes.','Pedir talla y color: <mark>I need a large, in black.</mark>','Decir si algo te queda bien.'],
  lines:[['B','Are you looking for something?','¿Busca algo?'],['C','Yes. I need [[a blue shirt]] for work.','Sí. Necesito una camisa azul para el trabajo.'],['B','What size are you?','¿Qué talla usa?'],['C','[[I\'m a medium.]]','Uso mediana.'],['B','Here you go. The fitting room is over there.','Aquí tiene. El probador está allá.'],['C','Thanks. [[It fits well.]] I\'ll take it.','Gracias. Me queda bien. Me lo llevo.']],
  chunks:[K('I need a ___.','Necesito un/una ___.','C',['blue shirt','black jacket','pair of shoes','white uniform'],'I need a ','.'),
-  K('What size are you? — I\'m a ___.','¿Qué talla usa? — Uso ___.','C',['small','medium','large','extra large'],"I'm a ",'.'),
+  K('What size are you? — I\'m ___.','¿Qué talla usa? — Uso ___.','C',["I'm a small.","I'm a medium.","I'm a large.","I'm an extra large."],'',''),
   K('Do you have it in ___?','¿Lo tiene en ___?','C',['black','white','gray','a larger size'],'Do you have it in ','?'),
   K('Where is the ___?','¿Dónde está el/la ___?','C',['fitting room','checkout','men\'s section','shoe department'],'Where is the ','?'),
   K('It fits / It\'s too ___.','Me queda bien / Es muy ___.','C',['It fits well.',"It's too big.","It's too small.","It's too tight."],'','')],
@@ -1527,7 +1528,7 @@ MU({id:'u18',ord:15,tema:'15',title:'Transport and travel',es:'Transporte, rutas
  scene:'Hablan de cómo llegan al trabajo y de un viaje.',
  can:['Decir cómo llegas al trabajo: <mark>I take the bus.</mark>','Preguntar cuánto tarda: <mark>How long does it take?</mark>','Comprar un boleto o pedir un viaje.'],
  lines:[['B','How do you get to work?','¿Cómo llegas al trabajo?'],['C','[[I take the bus.]] Sometimes I walk.','Tomo el autobús. A veces camino.'],['B','How long does it take?','¿Cuánto tarda?'],['C','About [[forty minutes]].','Unos cuarenta minutos.'],['B','Wow. I drive. It takes twenty.','Uf. Yo manejo. Tarda veinte.'],['C','I need one ticket to downtown, please.','Necesito un boleto al centro, por favor.']],
- chunks:[K('I take the ___.','Tomo el ___.','C',['bus','train','subway','taxi'],'I take the ','.'),
+ chunks:[K('I take ___.','Tomo ___.','C',['I take the bus.','I take the train.','I take the subway.','I take a taxi.'],'',''),
   K('I ___ to work.','Voy al trabajo ___.','C',['walk','drive','ride my bike'],'I ',' to work.'),
   K('How long does it take?','¿Cuánto tarda?','B',['It takes forty minutes.','It takes about an hour.','It takes ten minutes.'],'',''),
   K('One ticket to ___, please.','Un boleto a ___, por favor.','C',['downtown','the airport','Dallas','the city center'],'One ticket to ',', please.'),
@@ -1554,7 +1555,7 @@ MU({id:'u19',ord:16,tema:'16',title:'Weather',es:'El clima y la charla del tiemp
   K("It's ___ing. (lluvia / nieve)",'Está ___.','C',['raining','snowing'],"It's ",'.'),
   K("What's the weather like ___?",'¿Cómo está el clima ___?','C',['today','tomorrow','in Dallas'],"What's the weather like ",'?'),
   K("It's going to ___.",'Va a ___.','C',['rain','snow','be sunny','be cold'],"It's going to ",'.'),
-  K('I need a ___.','Necesito un/una ___.','C',['jacket','umbrella','coat','hat'],'I need a ','.')],
+  K('I need ___.','Necesito ___.','C',['I need a jacket.','I need an umbrella.','I need a coat.','I need a hat.'],'','')],
  ex:[LI('Escucha. ¿Cómo está el clima?',"It's raining.",'B',['Está lloviendo','Hace sol','Hace calor'],'"Raining" viene de rain (lluvia).'),
   LI('Escucha. ¿Qué dicen del clima?',"It's sunny and warm.",'B',['Soleado y cálido','Frío y nublado','Con viento'],'Sunny = soleado; warm = cálido.'),
   BU('Arma la frase: hoy hace frío.',['It\'s','cold','today.'],['am'],'It\'s + clima.'),
@@ -1572,13 +1573,13 @@ MU({id:'u19',ord:16,tema:'16',title:'Weather',es:'El clima y la charla del tiemp
 MU({id:'u20',ord:17,tema:'17',title:'Health and feelings',es:'Salud, síntomas y emociones',other:'Supervisor',
  scene:'No te sientes bien y se lo dices a tu supervisor.',
  can:['Decir cómo te sientes: <mark>I feel tired.</mark>','Decir qué te duele: <mark>I have a headache.</mark>','Pedir permiso para ir al médico.'],
- lines:[['B','Hey, are you okay? You look tired.','¿Estás bien? Te ves cansada.'],['C','[[I don\'t feel well.]] I have a headache.','No me siento bien. Me duele la cabeza.'],['B','I\'m sorry to hear that. Do you want to go home?','Lamento oírlo. ¿Quieres irte a casa?'],['C','[[Can I leave early]] today?','¿Puedo salir temprano hoy?'],['B','Of course. Take care of yourself.','Claro. Cuídate.'],['C','Thank you. I\'ll see a doctor.','Gracias. Iré al médico.']],
+ lines:[['B','Hey, are you okay? You look tired.','¿Estás bien? Te ves cansado/a.'],['C','[[I don\'t feel well.]] I have a headache.','No me siento bien. Me duele la cabeza.'],['B','I\'m sorry to hear that. Do you want to go home?','Lamento oírlo. ¿Quieres irte a casa?'],['C','[[Can I leave early]] today?','¿Puedo salir temprano hoy?'],['B','Of course. Take care of yourself.','Claro. Cuídate.'],['C','Thank you. I\'ll see a doctor.','Gracias. Iré al médico.']],
  chunks:[K('I feel ___.','Me siento ___.','C',['tired','sick','better','great','stressed'],'I feel ','.'),
   K('I have a ___.','Tengo / Me duele ___.','C',['headache','cold','fever','sore throat','stomachache'],'I have a ','.'),
   K('My ___ hurts.','Me duele el/la ___.','C',['back','head','stomach','neck'],'My ',' hurts.'),
   K('Can I ___?','¿Puedo ___?','C',['leave early','take a break','see a doctor','go home'],'Can I ','?'),
   K('Take care! / Feel better!','¡Cuídate! / ¡Mejórate!','B',['Take care!','Feel better soon!','I hope you feel better.'],'','')],
- ex:[LI('Escucha. ¿Qué le pasa?','I have a headache.','B',['Le duele la cabeza','Tiene fiebre','Está cansada'],'Headache es dolor de cabeza.'),
+ ex:[LI('Escucha. ¿Qué le pasa?','I have a headache.','B',['Le duele la cabeza','Tiene fiebre','Está cansado/a'],'Headache es dolor de cabeza.'),
   LI('Escucha. ¿Qué te preguntan?','Do you want to go home?','B',['Si quieres ir a casa','Si quieres comer','Si tienes cita'],'"Go home" es ir a casa.'),
   BU('Arma la frase: no me siento bien.',['I','don\'t','feel','well.'],['am'],'I don\'t feel well.'),
   FI('Completa.','My back ___. (me duele)',['hurts','hurt','hurting'],'My back hurts.','Con sujeto singular: hurts.'),
@@ -1732,7 +1733,7 @@ MU({id:'u27',ord:21.05,grp:'w',tema:'21.5',title:'English at Work: Restaurants a
  scene:'Trabajas en la recepción de un hotel y en la cocina de su restaurante.',
  can:['Atender a un huésped: <mark>Welcome! Do you have a reservation?</mark>','Entender pedidos de cocina: <mark>Order up!</mark>','Ofrecer ayuda y dar información.'],
  lines:[['C','[[Welcome to the Grand Hotel.]] Do you have a reservation?','Bienvenido al Grand Hotel. ¿Tiene una reservación?'],['B','Yes. The name is Miller.','Sí. A nombre de Miller.'],['C','Thank you, Mr. Miller. [[Your room is on the fourth floor.]]','Gracias, Sr. Miller. Su habitación está en el cuarto piso.'],['B','What time is breakfast?','¿A qué hora es el desayuno?'],['C','Breakfast is from six to ten, in the restaurant.','El desayuno es de seis a diez, en el restaurante.'],['B','Great. Thank you!','Excelente. ¡Gracias!']],
- chunks:[K('Do you have a ___?','¿Tiene ___?','C',['reservation','room key','ID','credit card'],'Do you have a ','?'),
+ chunks:[K('Do you have ___?','¿Tiene ___?','C',['Do you have a reservation?','Do you have a room key?','Do you have an ID?','Do you have a credit card?'],'',''),
   K('Your room is on the ___ floor.','Su habitación está en el ___ piso.','C',['second','third','fourth','fifth'],'Your room is on the ',' floor.'),
   K('Breakfast is from ___.','El desayuno es de ___.','C',['six to ten','seven to eleven'],'Breakfast is from ','.'),
   K('Order up! / Table ___.','¡Pedido listo! / Mesa ___.','C',['Order up!','Table five, two burgers.','Order for table three.','Table seven needs water.'],'',''),
@@ -1757,7 +1758,7 @@ MU({id:'u28',ord:21.06,grp:'w',tema:'21.6',title:'English at Work: Retail and sa
  lines:[['C','Hi! [[Can I help you find something?]]','¡Hola! ¿Le ayudo a encontrar algo?'],['B','Yes. Do you have this in a larger size?','Sí. ¿Tienen esto en una talla más grande?'],['C','Let me check. [[Yes, we do.]] Here you go.','Déjeme ver. Sí, tenemos. Aquí tiene.'],['B','Great. How much is it?','Genial. ¿Cuánto cuesta?'],['C','It\'s thirty-nine ninety-nine. [[Cash or card?]]','Cuesta $39.99. ¿Efectivo o tarjeta?'],['B','Card. And can I return it if it doesn\'t fit?','Tarjeta. ¿Y puedo devolverlo si no me queda?']],
  chunks:[K('Can I help you ___?','¿Le ayudo a ___?','C',['find something','with that','with anything else'],'Can I help you ',' ?'.replace(' ?','?')),
   K('Let me check. / We have it in ___.','Déjeme ver. / Lo tenemos en ___.','C',['Let me check.','We have it in blue and black.','We have it in a larger size.',"I'm sorry, we're out of that."],'',''),
-  K("It's ___.",'Cuesta ___.','C',['thirty-nine ninety-nine','twelve fifty','a hundred twenty'],"It's ",'.'),
+  K("It's ___.",'Cuesta ___.','C',['thirty-nine ninety-nine','twelve fifty','one hundred twenty'],"It's ",'.'),
   K('Cash or card?','¿Efectivo o tarjeta?','C',['Cash or card?','Do you want a bag?','Do you need a receipt?'],'',''),
   K('You can return it ___.','Puede devolverlo ___.','C',['within thirty days','with the receipt','at any store'],'You can return it ','.')],
  ex:[LI('Escucha. ¿Cuánto cuesta?',"It's thirty-nine ninety-nine.",'B',['$39.99','$13.99','$30.90'],'Thirty-nine ninety-nine = $39.99.',true),
@@ -1779,7 +1780,7 @@ MU({id:'u29',ord:21.07,grp:'w',tema:'21.7',title:'English at Work: Banking and c
  can:['Abrir la atención: <mark>How can I help you today?</mark>','Pedir datos y verificar identidad.','Explicar un siguiente paso con claridad.'],
  lines:[['C','Good morning. [[How can I help you today?]]','Buenos días. ¿En qué le ayudo hoy?'],['B','I want to deposit this check.','Quiero depositar este cheque.'],['C','Sure. [[Can I see your ID, please?]]','Claro. ¿Me muestra su identificación?'],['B','Here you go.','Aquí tiene.'],['C','Thank you. [[Please sign here.]]','Gracias. Firme aquí, por favor.'],['B','Done. When will the money be in my account?','Listo. ¿Cuándo estará el dinero en mi cuenta?']],
  chunks:[K('How can I help you ___?','¿En qué le ayudo ___?','C',['today','this morning'],'How can I help you ','?'),
-  K('Can I see your ___, please?','¿Me muestra su ___?','C',['ID','card','account number','phone number'],'Can I see your ',', please?'),
+  K('Can I see your ___, please?','¿Me muestra su ___?','C',['ID','card','account number','driver\'s license'],'Can I see your ',', please?'),
   K('Please ___.','Por favor ___.','C',['sign here','enter your PIN','wait a moment','fill out this form'],'Please ','.'),
   K('Your ___ is ___.','Su ___ es ___.','C',['balance is two hundred dollars','account number is on the card','card will arrive in a week'],'Your ','.'),
   K('It will take ___.','Tardará ___.','C',['one business day','two to three days','a few minutes'],'It will take ','.')],
@@ -1801,11 +1802,11 @@ MU({id:'u30',ord:21.08,grp:'w',tema:'21.8',title:'English at Work: Hospitals and
  scene:'Trabajas en la recepción de una clínica.',
  can:['Recibir a un paciente: <mark>Do you have an appointment?</mark>','Pedir datos básicos y entregar un formulario.','Dar indicaciones dentro de la clínica.'],
  lines:[['C','Good morning. [[Do you have an appointment?]]','Buenos días. ¿Tiene una cita?'],['B','Yes. Ten o\'clock with Dr. Lee.','Sí. A las diez con el doctor Lee.'],['C','Okay. [[Please fill out this form.]]','Bien. Llene este formulario, por favor.'],['B','Where should I wait?','¿Dónde espero?'],['C','Have a seat in the waiting room. The nurse will call you.','Tome asiento en la sala de espera. La enfermera lo llamará.'],['B','Thank you.','Gracias.']],
- chunks:[K('Do you have an ___?','¿Tiene ___?','C',['appointment','insurance card','ID','referral'],'Do you have an ','?'),
+ chunks:[K('Do you have ___?','¿Tiene ___?','C',['Do you have an appointment?','Do you have an insurance card?','Do you have an ID?','Do you have a referral?'],'',''),
   K('Please ___.','Por favor ___.','C',['fill out this form','have a seat','wait here','sign here'],'Please ','.'),
   K("What's your ___?",'¿Cuál es su ___?','C',['name','date of birth','phone number','address'],"What's your ",'?'),
-  K('The ___ will call you.','___ lo llamará.','C',['nurse','doctor','assistant'],'The ',' will call you.'),
-  K("It's in ___.",'Está en ___.','C',['room three','the waiting room','the lab','the second floor'],"It's in ",'.')],
+  K('The ___ will call you.','___ lo llamará.','C',['nurse','doctor','medical assistant'],'The ',' will call you.'),
+  K("It's ___.",'Está ___.','C',["It's in room three.","It's in the waiting room.","It's in the lab.","It's on the second floor."],'','')],
  ex:[LI('Escucha. ¿Qué te piden?','Please fill out this form.','B',['Llenar el formulario','Mostrar la identificación','Pagar la consulta'],'Fill out es llenar.'),
   LI('Escucha. ¿Cuándo es la cita?',"It's at ten o'clock.",'B',['10:00','2:00','12:00'],'Ten es 10.',true),
   BU('Arma la pregunta: ¿tiene una cita?',['Do','you','have','an','appointment?'],['are'],'Do you have + an + appointment.'),
@@ -1815,7 +1816,7 @@ MU({id:'u30',ord:21.08,grp:'w',tema:'21.8',title:'English at Work: Hospitals and
   SM('Ten o\'clock with Dr. Lee.',['Please fill out this form.','Muy bien.'],['Form.','Falta la frase.'],['Cash or card?']),
   SM('Where should I wait?',['Have a seat in the waiting room.','Claro.'],['There.','Poco claro.'],['For here, please.'])],
  turns:[T2('Pregunta si tiene una cita.','Do you have an appointment?','Good morning.',/\bdo you have an appointment\b/,/\b(appointment|reservation)\b/,'Do you have an appointment?'),
-  T2('Pide que llene el formulario.','Please fill out this form.','Yes. Ten o clock with Dr. Lee.',/\b(please )?fill (out|in) this form\b/,/\b(form|fill)\b/,'Please fill out this form.'),
+  T2('Pide que llene el formulario.','Please fill out this form.','Yes. Ten o\'clock with Dr. Lee.',/\b(please )?fill (out|in) this form\b/,/\b(form|fill)\b/,'Please fill out this form.'),
   T2('Indica dónde esperar.','Please have a seat in the waiting room.','Where should I wait?',/\b(have a seat|waiting room|wait here)\b/,/\b(wait|seat|room)\b/,'Please have a seat in the waiting room.')],
  notes:['En una clínica, <em>appointment</em> es cita médica; <em>insurance</em> es el seguro.','Pide siempre el nombre completo y la fecha de nacimiento (<em>date of birth</em>) para ubicar a la persona.','Si no entiendes a un paciente, pide con cortesía: <em>Could you say that again?</em>'],
  res:[VOAL('lets-learn-english-lesson-44-making-healthy-choices/3688552','lección 44: Making healthy choices','Salud y hábitos, útil para el vocabulario básico de salud.'),S7U('a232-visitor-at-the-desk','Visitor at the desk','listening','Escena de recepción con transcripción: un modelo de atención al público.'),ESLW()]});
@@ -1892,6 +1893,23 @@ UNITS.forEach(function(u){var m=META[u.id]; if(m){u.ord=m[0];u.tema=m[1];u.grp=m
 UNITS.sort(function(a,b){return a.ord-b.ord;});
 UNITS.forEach(function(u,i){u.n=i+1;});
 function unitLabel(u){if(u.tema==='Extra') return 'Extra de práctica';return u.grp==='w'?'English at Work '+u.tema:'Tema '+u.tema;}
+
+UNITS.forEach(function(u){u.tag=unitLabel(u);});
+
+/* distractors: use an answer from another moment of the same scene instead of a repeated generic phrase */
+var GENERIC_OFF=/^(Two years\.|Cash or card\??|For here, please\.|To go, please\.|It's Ana\.|At nine o'clock\.|Card, please\.|I'm thirty-two\.|I'm a medium\.|Nice to meet you\.|I'm from (Texas|Mexico|Guatemala)\.|It is cold\.|No, that is it\.|No, that's it\.|I work in sales\.|I'm 32\.|At three o'clock\.|At six o'clock\.|How much is it\?|Thanks, you too!|That'll be five forty-two\.|Cash or card\.)$/;
+UNITS.forEach(function(u){
+  if(['u1','u2','u3','u4','u5','u6'].indexOf(u.id)>=0) return;
+  var n=u.sim.length;
+  u.sim.forEach(function(nd,i){
+    var off=nd.opts.filter(function(o){return o.k==='off';})[0];
+    if(!off||!GENERIC_OFF.test(off.t)) return;
+    var cand=u.sim[(i+1)%n].opts[0].t, own=nd.opts.map(function(o){return o.t;});
+    if(own.indexOf(cand)>=0) cand=u.sim[(i+2)%n].opts[0].t;
+    if(own.indexOf(cand)>=0) return;
+    off.t=cand; off.f='Esa respuesta es de otro momento de la conversación: no responde a lo que te dicen ahora.';
+  });
+});
 /* ---------- Unit runtime ---------- */
 var ALLC=[]; UNITS.forEach(function(u){ALLC=ALLC.concat(u.chunks);});
 var U=UNITS[0];
@@ -1954,7 +1972,7 @@ function header(){
   function b(v,l,extra){return '<button class="'+(S.view===v?'on':'')+'" data-act="view" data-v="'+v+'">'+l+(extra||'')+'</button>';}
   return '<header class="top"><div class="brand">'+CUP+'<span>Order Up</span></div><div class="topr">'+
    '<button class="chip '+(S.voicesOpen?'on':'')+'" data-act="voicesToggle" aria-expanded="'+(S.voicesOpen?'true':'false')+'">Voces</button>'+
-   '<nav class="seg" aria-label="Secciones">'+b('home','Inicio')+b('lesson',U.tag)+b('review','Repaso',due?'<span class="badge">'+due+'</span>':'')+b('resources','Enlaces')+'</nav></div></header>';
+   '<nav class="seg" aria-label="Secciones">'+b('home','Inicio')+b('lesson','Unidad '+U.n)+b('review','Repaso',due?'<span class="badge">'+due+'</span>':'')+b('resources','Enlaces')+'</nav></div></header>';
 }
 /* ---------- Step 0: Goal ---------- */
 function bodyMeta(){
