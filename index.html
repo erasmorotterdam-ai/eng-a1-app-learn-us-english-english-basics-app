@@ -1953,12 +1953,12 @@ var AIT=[
 ];
 var AI_NOTE='<p class="muted small" style="margin:12px 0 0">Los planes gratuitos tienen límites que cambian; algunos piden registro. Datos de las páginas oficiales y de listados de terceros, revisados el 18 de noviembre de 2026 (confirma precios en cada sitio). Tu voz se envía a esas empresas: no compartas datos personales. Los tutores de IA se equivocan a veces y no sustituyen la práctica con personas.</p>';
 function aiPrompt(){
-  return 'Act as a friendly American English tutor for an A1 learner. Role-play this situation: '+(U.title||'everyday English')+'. Use very short, simple sentences. Ask me one question at a time and wait for my answer. After each answer, fix my mistake in one short sentence and ask the next question. Speak slowly.';
+  return 'Act as a friendly American English tutor for an A1 learner. Role-play this situation: '+((S.view==='lesson'&&U.title)?U.title:'everyday English at work')+'. Use very short, simple sentences. Ask me one question at a time and wait for my answer. After each answer, fix my mistake in one short sentence and ask the next question. Speak slowly.';
 }
 function aiCard(withPrompt){
   return '<section class="card"><div class="eyebrow">Tutores de IA gratis</div><h2>Practica hablando con un tutor de IA</h2>'+
    '<p class="lead" style="font-size:15px">Cuando termines la unidad, conversa en voz alta con un tutor de IA. Pega este mensaje al empezar para que practique contigo esta situación.</p>'+
-   (withPrompt?'<div class="note mono" style="user-select:all;white-space:pre-wrap">'+esc(aiPrompt())+'</div>':'')+
+   '<div class="note mono" id="aiprompt" style="user-select:all;white-space:pre-wrap">'+esc(aiPrompt())+'</div><div class="actions" style="margin:10px 0 14px"><button class="btn" data-act="copyAI">Copiar mensaje</button></div>'+
    resHTML(AIT)+AI_NOTE+'</section>';
 }
 /* ---------- Home and resources views ---------- */
@@ -2185,6 +2185,7 @@ function goStep(i){
 /* ---------- Actions ---------- */
 var H={
   openUnit:function(el){stopAudio();abortTalk();setUnit(el.dataset.id);S.view='lesson';save();render();top();},
+  copyAI:function(el){var t=aiPrompt();function sel(){var r=document.createRange();r.selectNodeContents(document.getElementById('aiprompt'));var q=getSelection();q.removeAllRanges();q.addRange(r);el.textContent='Selecciona y copia (Ctrl+C)';}try{navigator.clipboard.writeText(t).then(function(){el.textContent='Copiado';},sel);}catch(e){sel();}},
   view:function(el){stopAudio();abortTalk();S.view=el.dataset.v;if(S.view==='review')revStart();render();top();},
   voicesToggle:function(){S.voicesOpen=!S.voicesOpen;if(S.voicesOpen)loadVoices();render();},
   voiceTest:function(el){var r=el.dataset.r;say(r==='B'?'Hi! What can I get for you?':'Hi. Can I get a medium latte, please?',r);},
