@@ -1977,7 +1977,26 @@ function bodyHome(){
    '<ul class="clean"><li>Cada unidad toma unos 15 minutos.</li><li>Tu progreso se guarda en este navegador, sin cuenta.</li><li>Completadas: '+done+' de '+UNITS.length+'.</li></ul></section>'+
    '<h2 class="grp">Temas de la vida diaria ('+basic.length+')</h2><div class="units">'+basic.map(card).join('')+'</div>'+
    '<h2 class="grp">English at Work ('+work.length+')</h2><div class="units">'+work.map(card).join('')+'</div>'+
-   aiCard(false)+'<section class="card"><h3>Más recursos gratuitos</h3><p class="muted small" style="margin:0 0 10px">Sitios generales para seguir practicando listening y speaking.</p><div class="actions" style="margin-top:0"><button class="btn" data-act="view" data-v="resources">Ver todos los recursos</button></div></section>';
+   aiCard(false)+'<section class="card"><h3>Más recursos gratuitos</h3><p class="muted small" style="margin:0 0 10px">Sitios generales para seguir practicando listening y speaking.</p><div class="actions" style="margin-top:0"><button class="btn" data-act="view" data-v="plan">Plan semanal</button><button class="btn" data-act="view" data-v="resources">Ver todos los recursos</button></div></section>';
+}
+function bodyPlan(){
+  var days=[
+   ['Lunes','Unidad nueva (A)','Escucha las frases sin leer, luego con texto. Haz «Escuchar» y «Frases». Repite en voz alta cada frase 3 veces.','20 min'],
+   ['Martes','Unidad A: practicar y hablar','Ejercicios, simulación y «Tu turno» hablando con la app. Termina con 5 min de Repaso.','25 min'],
+   ['Miércoles','Unidad nueva (B)','Repaso de 5 min y después escucha y frases de la unidad B, repitiendo en voz alta.','25 min'],
+   ['Jueves','Unidad B: practicar y hablar','Ejercicios, simulación y «Tu turno». Si algo salió mal, repite el turno hasta que salga natural.','25 min'],
+   ['Viernes','Tutor de IA','Repaso de 5 min. Luego 10 min con un tutor de IA: pega el mensaje de la unidad y pide que corrija una sola cosa a la vez.','20 min'],
+   ['Sábado','Inglés real','Abre un enlace de la unidad: escucha sin leer, con transcripción y repite en voz alta (shadowing). Grábate y compara con el original.','25 min'],
+   ['Domingo','Descanso o repaso ligero','Opcional: 5 min de Repaso y volver a oír tus frases favoritas.','5 min']
+  ];
+  var rows=days.map(function(d){return '<article class="unit"><div class="unit-top"><div><div class="muted small mono">'+d[0]+' · '+d[3]+'</div><h3>'+d[1]+'</h3><div class="muted small" style="margin-top:4px">'+d[2]+'</div></div></div></article>';}).join('');
+  var done=UNITS.filter(function(u){return unitPct(u)>=100;}).length, left=UNITS.length-done;
+  return '<section class="card"><div class="eyebrow">Plan semanal</div><h1>Una semana de estudio</h1>'+
+   '<p class="lead">Unas 2 horas por semana, en sesiones de 20 a 25 minutos. Con 2 unidades por semana, terminas las '+UNITS.length+' unidades en unas 17 semanas. Te faltan '+left+' ('+Math.ceil(left/2)+' semanas a este ritmo).</p>'+
+   '<div class="note"><strong>Reglas:</strong> estudia poco cada día mejor que mucho un día; siempre escucha antes de hablar; repite en voz alta, no solo en la cabeza; y no avances si una unidad te salió por debajo del 60%.</div></section>'+
+   '<div class="units">'+rows+'</div>'+
+   '<section class="card"><h3>Cómo seguir cada 4 semanas</h3><ul class="clean"><li>Repasa las frases que fallaste con más frecuencia.</li><li>Vuelve a hablar una conversación completa de una unidad anterior, sin mirar el texto.</li><li>Haz 15 min con un tutor de IA sobre un tema que ya viste y anota 3 frases nuevas que te corrigió.</li><li>Si puedes, practica con una persona (intercambio de idiomas o un grupo).</li></ul>'+
+   '<div class="actions"><button class="btn primary" data-act="view" data-v="home">Ir a las unidades</button></div></section>'+aiCard(false);
 }
 function bodyRes(){
   var per=UNITS.map(function(u){return '<section class="card"><div class="eyebrow">'+esc(u.tag)+'</div><h2>'+esc(u.title)+'</h2>'+resHTML(u.res)+'</section>';}).join('');
@@ -2023,6 +2042,7 @@ function render(){
   var html=header()+edgeBanner()+'<div id="voicepanel">'+voicePanel()+'</div>';
   if(S.view==='home') html+=bodyHome();
   else if(S.view==='resources') html+=bodyRes();
+  else if(S.view==='plan') html+=bodyPlan();
   else if(S.view==='review') html+=bodyReview();
   else{
     html+=stepper();
