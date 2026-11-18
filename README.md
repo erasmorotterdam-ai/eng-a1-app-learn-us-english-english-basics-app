@@ -62,3 +62,11 @@ Todo el contenido está en `index.html`, en el bloque `UNITS.push({...})` de cad
 ## Enlaces externos
 
 Los enlaces se revisaron el 15 de noviembre de 2026. Son sitios de terceros: pueden cambiar de dirección, pedir registro para ciertas funciones o tener acentos variados. Si alguno deja de funcionar, edita el arreglo `res` de la unidad.
+
+## Tutores de IA gratuitos
+
+La app enlaza (inicio, vista «Enlaces», inicio y cierre de cada unidad) a TalkDrill, bule.ai, WeSpeak, Gliglish, SpeakShark, Gemini Live, ChatGPT (voz) y Microsoft Copilot (voz), con un mensaje listo para pegar según la unidad. Los planes gratuitos tienen límites que cambian y algunos piden registro; datos revisados el 18 de noviembre de 2026. Para editar la lista, modifica el arreglo `AIT` en `index.html`.
+
+## Plan semanal
+
+La vista «Plan semanal» (botón en el inicio) propone 2 unidades por semana en sesiones de 20 a 25 minutos: unidad nueva, práctica y habla, repaso, tutor de IA, inglés real y descanso. Edita `bodyPlan` en `index.html` para cambiarlo.
