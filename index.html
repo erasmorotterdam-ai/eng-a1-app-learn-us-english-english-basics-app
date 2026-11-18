@@ -1941,6 +1941,26 @@ function resCard(title){
   return '<section class="card"><div class="eyebrow">Fuera de la app</div><h2>'+title+'</h2>'+
    '<p class="lead" style="font-size:15px">Para oír inglés real de trabajo y practicar hablando. Escucha primero sin leer, luego con transcripción, y repite en voz alta (técnica de <em>shadowing</em>).</p>'+resHTML(U.res)+RES_NOTE+'</section>';
 }
+var AIT=[
+ {t:'TalkDrill',u:'https://www.talkdrill.com/',k:'Voz · web y Android',d:'Gratis: unos 2 min de voz con IA al día (o 20 mensajes), informe básico. La primera llamada no pide registro.'},
+ {t:'bule.ai',u:'https://bule.ai/',k:'Voz · web',d:'Plan gratis con práctica de voz diaria, escenarios cotidianos y de entrevista, y resúmenes. No publican la duración diaria.'},
+ {t:'WeSpeak',u:'https://wespeak.now/',k:'Voz · app',d:'Práctica diaria gratis con retroalimentación de gramática; el plan de pago (con prueba) quita el límite.'},
+ {t:'Gliglish',u:'https://gliglish.com/',k:'Voz · web',d:'Hasta 10 min al día y 50 mensajes gratis; se puede empezar sin registro. Puede limitarse en horas de mucha demanda.'},
+ {t:'SpeakShark',u:'https://speakshark.com/signup',k:'Voz · pronunciación',d:'Tres sesiones de 5 min al día gratis, con comentarios sobre pronunciación (requiere registro).'},
+ {t:'Gemini Live',u:'https://gemini.google.com/',k:'Voz · cuenta Google',d:'Conversación hablada gratis con cuenta de Google; sin tope diario publicado.'},
+ {t:'ChatGPT (voz)',u:'https://chatgpt.com/',k:'Voz · cuenta',d:'Voz gratis con límite diario no publicado; texto casi ilimitado. Requiere cuenta.'},
+ {t:'Microsoft Copilot (voz)',u:'https://copilot.microsoft.com/',k:'Voz · web',d:'Voz gratis sin límites fijos anunciados; puede cortarse con mucha demanda.'}
+];
+var AI_NOTE='<p class="muted small" style="margin:12px 0 0">Los planes gratuitos tienen límites que cambian; algunos piden registro. Datos de las páginas oficiales y de listados de terceros, revisados el 18 de noviembre de 2026 (confirma precios en cada sitio). Tu voz se envía a esas empresas: no compartas datos personales. Los tutores de IA se equivocan a veces y no sustituyen la práctica con personas.</p>';
+function aiPrompt(){
+  return 'Act as a friendly American English tutor for an A1 learner. Role-play this situation: '+(U.title||'everyday English')+'. Use very short, simple sentences. Ask me one question at a time and wait for my answer. After each answer, fix my mistake in one short sentence and ask the next question. Speak slowly.';
+}
+function aiCard(withPrompt){
+  return '<section class="card"><div class="eyebrow">Tutores de IA gratis</div><h2>Practica hablando con un tutor de IA</h2>'+
+   '<p class="lead" style="font-size:15px">Cuando termines la unidad, conversa en voz alta con un tutor de IA. Pega este mensaje al empezar para que practique contigo esta situación.</p>'+
+   (withPrompt?'<div class="note mono" style="user-select:all;white-space:pre-wrap">'+esc(aiPrompt())+'</div>':'')+
+   resHTML(AIT)+AI_NOTE+'</section>';
+}
 /* ---------- Home and resources views ---------- */
 function bodyHome(){
   function card(u){
@@ -1957,14 +1977,14 @@ function bodyHome(){
    '<ul class="clean"><li>Cada unidad toma unos 15 minutos.</li><li>Tu progreso se guarda en este navegador, sin cuenta.</li><li>Completadas: '+done+' de '+UNITS.length+'.</li></ul></section>'+
    '<h2 class="grp">Temas de la vida diaria ('+basic.length+')</h2><div class="units">'+basic.map(card).join('')+'</div>'+
    '<h2 class="grp">English at Work ('+work.length+')</h2><div class="units">'+work.map(card).join('')+'</div>'+
-   '<section class="card"><h3>Más recursos gratuitos</h3><p class="muted small" style="margin:0 0 10px">Sitios generales para seguir practicando listening y speaking.</p><div class="actions" style="margin-top:0"><button class="btn" data-act="view" data-v="resources">Ver todos los recursos</button></div></section>';
+   aiCard(false)+'<section class="card"><h3>Más recursos gratuitos</h3><p class="muted small" style="margin:0 0 10px">Sitios generales para seguir practicando listening y speaking.</p><div class="actions" style="margin-top:0"><button class="btn" data-act="view" data-v="resources">Ver todos los recursos</button></div></section>';
 }
 function bodyRes(){
   var per=UNITS.map(function(u){return '<section class="card"><div class="eyebrow">'+esc(u.tag)+'</div><h2>'+esc(u.title)+'</h2>'+resHTML(u.res)+'</section>';}).join('');
   return '<section class="card"><div class="eyebrow">Recursos externos gratuitos</div><h1>Escucha y habla inglés real</h1>'+
    '<p class="lead">Enlaces para practicar listening y speaking con inglés americano en contextos de trabajo. Primero los generales y después los de cada unidad.</p>'+
    '<div class="note"><strong>Cómo usarlos:</strong> 1) escucha sin leer, 2) escucha con transcripción, 3) repite en voz alta junto al audio, 4) vuelve a la app y practica.</div>'+RES_NOTE+'</section>'+
-   '<section class="card"><h2>Generales</h2>'+resHTML(GEN)+'</section>'+per;
+   aiCard(false)+'<section class="card"><h2>Generales</h2>'+resHTML(GEN)+'</section>'+per;
 }
 /* ---------- Header ---------- */
 function header(){
@@ -1980,7 +2000,7 @@ function bodyMeta(){
    '<h1>'+esc(U.title)+'</h1><p class="lead">'+esc(U.es)+'. '+esc(U.blurb)+'</p>'+
    '<h2>Al terminar podrás</h2><ul class="clean">'+U.can.map(function(x){return '<li>'+x+'</li>';}).join('')+'</ul>'+
    '<p class="muted small" style="margin-top:14px">Unos '+U.mins+' minutos. Tu progreso se guarda en este navegador, sin cuenta.</p>'+
-   '<div class="actions"><button class="btn primary big" data-act="next">Empezar</button></div></section>'+resCard('Enlaces para oír inglés real de trabajo');
+   '<div class="actions"><button class="btn primary big" data-act="next">Empezar</button></div></section>'+resCard('Enlaces para oír inglés real de trabajo')+aiCard(true);
 }
 /* ---------- Step 6: Wrap-up ---------- */
 function bodyWrap(){
@@ -1993,7 +2013,7 @@ function bodyWrap(){
    '<p class="muted small" style="margin-top:12px">Práctica: '+first+' de '+EX.length+' a la primera · Conversación elegida: '+nat+' de '+SIM.length+' · Conversación hablada: '+mnat+' de '+TURNS.length+' naturales a la primera.</p></section>'+
    '<section class="card"><h2>Que no se te olviden</h2><p>Guarda las '+CHUNKS.length+' frases. Volverán al repaso mañana, luego en 2, 4, 7 y 14 días, y se espacian más cuanto mejor las recuerdes.</p>'+
    '<div class="actions" style="margin-top:0">'+(saved?'<button class="btn" disabled>Frases guardadas</button><button class="btn primary" data-act="view" data-v="review">Ir al repaso</button>':'<button class="btn primary" data-act="saveDeck">Guardar '+CHUNKS.length+' frases en mi repaso</button>')+'</div></section>'+
-   resCard('Sigue practicando fuera de la app')+
+   resCard('Sigue practicando fuera de la app')+aiCard(true)+
    '<section class="card"><h3>'+(nxt?'Siguiente unidad':'Has llegado al final')+'</h3>'+
    (nxt?'<p class="muted" style="margin:0 0 10px">'+esc(nxt.tag)+': '+esc(nxt.title)+' · '+esc(nxt.es)+'</p><div class="actions" style="margin-top:0"><button class="btn primary" data-act="openUnit" data-id="'+nxt.id+'">Ir a '+esc(nxt.tag)+'</button></div>':'<p class="muted" style="margin:0">Repasa tus frases cada día y vuelve a hablar las conversaciones de cada unidad. Usa los enlaces para oír más inglés real.</p>')+'</section>'+
    '<div class="actions between"><button class="btn" data-act="back">← Atrás</button><button class="btn" data-act="restart">Reiniciar unidad</button></div>';
